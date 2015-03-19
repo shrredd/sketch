@@ -14,7 +14,7 @@ class MSPage(MSLayerGroup):
                  horizontalRulerData,  verticalRulerData,
                  layers,  # inherited from MSLayerGroup
                  frame, style, name, rotation,
-                 isVisible, isLocked, isSelected,
+                 isVisible, isLocked,
                  isFlippedHorizontal, isFlippedVertical):
 
         assert isinstance(horizontalRulerData, MSRulerData)
@@ -24,7 +24,7 @@ class MSPage(MSLayerGroup):
 
         super(MSPage, self).__init__(layers,
                                      frame, style, name, rotation,
-                                     isVisible, isLocked, isSelected,
+                                     isVisible, isLocked,
                                      isFlippedHorizontal, isFlippedVertical)
 
     @property

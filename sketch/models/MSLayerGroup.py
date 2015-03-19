@@ -4,14 +4,14 @@ from sketch.models import MSLayer
 class MSLayerGroup(MSLayer):
     def __init__(self, layers,
                  frame, style, name, rotation,  # Everything from here on is inherited from MSLayer
-                 isVisible, isLocked, isSelected,
+                 isVisible, isLocked,
                  isFlippedHorizontal, isFlippedVertical):
 
         assert isinstance(layers, list)
         self._layers = layers
 
         super(MSLayerGroup, self).__init(frame, style, name, rotation,
-                                         isVisible, isLocked, isSelected,
+                                         isVisible, isLocked,
                                          isFlippedHorizontal, isFlippedVertical)
 
     @property

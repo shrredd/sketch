@@ -6,7 +6,7 @@ from sketch.models import (
 
 class MSLayer(object):
     def __init__(self, frame, style, name, rotation,
-                 isVisible, isLocked, isSelected,
+                 isVisible, isLocked,
                  isFlippedHorizontal, isFlippedVertical):
 
         assert isinstance(frame, MSRect)
@@ -23,10 +23,9 @@ class MSLayer(object):
 
         assert isinstance(isVisible, bool)
         assert isinstance(isLocked, bool)
-        assert isinstance(isSelected, bool)
+
         self._isVisible = isVisible
         self._isLocked = isLocked
-        self._isSelected = isSelected
 
         assert isinstance(isFlippedHorizontal, bool)
         assert isinstance(isFlippedVertical, bool)
@@ -107,7 +106,8 @@ class MSLayer(object):
         """
         True if the layer is selected, false otherwise
         """
-        return self._isSelected
+        # Not implemented
+        pass
 
     def select(self, shouldSelect=True, byExpandingSelection=False):
         """
@@ -141,9 +141,8 @@ class MSLayer(object):
                 rotation: {rotation}, \n\
                 isVisible: {isVisible}, \n\
                 isLocked: {isLocked}, \n\
-                isSelected: {isSelected}, \n\
                 isFlippedHorizontal: {isFlippedHorizontal}, \n\
                 isFlippedVertical: {isFlippedVertical}".format(
                     frame=self.frame, style=self.style, name=self.name, rotation=self.rotation,
-                    isVisible=self.isVisible, isLocked=self.isLocked, isSelected=self.isSelected,
+                    isVisible=self.isVisible, isLocked=self.isLocked,
                     isFlippedHorizontal=self.isFlippedHorizontal, isFlippedVertical=self.isFlippedVertical)
