@@ -1,18 +1,18 @@
-from sketch.models import MSLayer
+from sketch.models.MSLayer import MSLayer
 
 
 class MSLayerGroup(MSLayer):
     def __init__(self, layers,
-                 frame, style, name, rotation,  # Everything from here on is inherited from MSLayer
+                 frame, style, name, rotation,
                  isVisible, isLocked,
                  isFlippedHorizontal, isFlippedVertical):
 
         assert isinstance(layers, list)
         self._layers = layers
 
-        super(MSLayerGroup, self).__init(frame, style, name, rotation,
-                                         isVisible, isLocked,
-                                         isFlippedHorizontal, isFlippedVertical)
+        super(MSLayerGroup, self).__init__(frame, style, name, rotation,
+                                           isVisible, isLocked,
+                                           isFlippedHorizontal, isFlippedVertical)
 
     @property
     def layers(self):
@@ -54,7 +54,7 @@ class MSLayerGroup(MSLayer):
 
     def addLayerOfType(self, type):
         """
-        Adds a completely new layer to the group, at the group’s {0,0} origin.
+        Adds a completely new layer to the group, at the group's {0,0} origin.
         This method takes one argument; a string which indicates the kind of layer.
         Currently the only supported values are: "rectangle" and "text".
 

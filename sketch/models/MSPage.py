@@ -1,4 +1,5 @@
-from sketch.models import (MSLayerGroup, MSRulerData)
+from sketch.models.MSLayerGroup import MSLayerGroup
+from sketch.models.MSRulerData import MSRulerData
 
 
 class MSPage(MSLayerGroup):
@@ -68,7 +69,7 @@ class MSPage(MSLayerGroup):
     def horizontalRulerData(self):
         """
         Returns the MSRulerData object used to store rulers for the horizontal axis.
-        Note that this data is only used if there’s no artboard on the page
+        Note that this data is only used if there is no artboard on the page
         (MSArtboardGroup has similar methods for itself).
         """
         return self._horizontalRulerData
@@ -77,7 +78,7 @@ class MSPage(MSLayerGroup):
     def verticalRulerData(self):
         """
         Returns the MSRulerData object used to store rulers for the vertical axis.
-        Note that this data is only used if there’s no artboard on the page
+        Note that this data is only used if there is no artboard on the page
         (MSArtboardGroup has similar methods for itself).
         """
         return self._verticalRulerData

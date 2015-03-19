@@ -1,7 +1,4 @@
-from sketch.models import (
-    MSRect,
-    MSStyle,
-)
+from sketch.models import (MSRect, MSStyle)
 
 
 class MSLayer(object):
@@ -67,7 +64,7 @@ class MSLayer(object):
     @property
     def isLocked(self):
         """
-        Returns true if the layer is locked, and false if it isn’t locked.
+        Returns true if the layer is locked, and false if it isn't locked.
         """
         return self._isLocked
 
@@ -121,7 +118,7 @@ class MSLayer(object):
     def absoluteRect(self):
         """
         Returns a GKRect object that returns the bounds of this layer in absolute coordinates;
-        it takes into account the layer’s rotation and that of any of its parents. (readonly)
+        it takes into account the layer's rotation and that of any of its parents. (readonly)
         """
         # Not implemented
         pass

@@ -1,7 +1,4 @@
-from sketch.models import (
-    MSLayerGroup,
-    MSRulerData,
-)
+from sketch.models.MSLayerGroup import MSLayerGroup
 
 
 class MSArtboardGroup(MSLayerGroup):
