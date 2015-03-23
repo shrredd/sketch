@@ -8,8 +8,8 @@ class MSRect(object):
     def __init__(self, x, y, width, height):
         self._x = x
         self._y = y
-        self._width = width
-        self._height = height
+        self._width = int(width)
+        self._height = int(height)
 
     """
     Base attributes. All floats
