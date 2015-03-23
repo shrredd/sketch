@@ -10,3 +10,6 @@ class CGPoint(object):
     @property
     def y(self):
         return self._y
+
+    def __repr__(self):
+        return "({x}, {y})".format(x=self.x, y=self.y)
