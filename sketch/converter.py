@@ -4,8 +4,15 @@ Translates plain ol' Binary Plist data into sketch.model objects
 import datetime
 
 from sketch.bplist import UID
+from sketch.models.MSCurvePoint import MSCurvePoint
 from sketch.models.MSDocumentData import MSDocumentData
 from sketch.models.MSImageCollection import MSImageCollection
+from sketch.models.MSLayer import MSLayer
+from sketch.models.MSLayerGroup import MSLayerGroup
+from sketch.models.MSPage import MSPage
+from sketch.models.MSRect import MSRect
+from sketch.models.MSShapePath import MSShapePath
+from sketch.models.MSShapePathLayer import MSShapePathLayer
 
 
 ##############################################################
@@ -22,38 +29,57 @@ def MSArchiver_object_converter(o):
         * NSDate
         * $null strings
     """
-    # Conversion: MSDocumentData
     if is_MSDocumentData(o):
         return convert_MSDocumentData(o)
-    # Conversion: MSPage
-    # elif is_MSPage(o):
-    #     return convert_MSPage(o)
-    # Conversion: MSImageCollection
-    elif is_MSImageCollection(o):
+
+    if is_MSPage(o):
+        return convert_MSPage(o)
+
+    if is_MSLayerGroup(o):
+        return convert_MSLayerGroup(o)
+
+    if is_MSLayer(o):
+        return convert_MSLayer(o)
+
+    if is_MSShapePathLayer(o):
+        return convert_MSShapePathLayer(o)
+
+    if is_MSShapePath(o):
+        return convert_MSShapePath(o)
+
+    if is_MSCurvePoint(o):
+        return convert_MSCurvePoint(o)
+
+    if is_MSRect(o):
+        return convert_MSRect(o)
+
+    if is_MSImageCollection(o):
         return convert_MSImageCollection(o)
-    # Conversion: MSArray
-    elif is_MSArray(o):
+
+    if is_MSArray(o):
         return convert_MSArray(o)
-    # Conversion: NSDictionary
-    elif is_NSMutableDictionary(o):
-        return convert_NSMutableDictionary(o)
-    # Conversion: NSArray
-    elif is_NSArray(o):
+
+    if is_NSArray(o):
         return convert_NSArray(o)
-    elif is_NSSet(o):
+
+    if is_NSSet(o):
         return convert_NSSet(o)
-    # Conversion: NSString
+
+    if is_NSMutableDictionary(o):
+        return convert_NSMutableDictionary(o)
+
     elif is_NSString(o):
         return convert_NSString(o)
-    # Conversion: NSDate
-    elif is_NSDate(o):
+
+    if is_NSDate(o):
         return convert_NSDate(o)
+
     # Conversion: "$null" string
-    elif isinstance(o, str) and o == "$null":
+    if isinstance(o, str) and o == "$null":
         return None
+
     # Fallback:
-    else:
-        return o
+    return o
 
 
 def MSArchiver_convert(o, object_table):
@@ -148,7 +174,7 @@ def convert_MSDocumentData(obj):
         layerSymbols=obj["layerSymbols"],
         layerTextStyles=obj["layerTextStyles"],
 
-        objectID=obj["do_objectID"],
+        objectID=obj.get("do_objectID"),
     )
 
 
@@ -166,14 +192,205 @@ def is_MSPage(obj):
     return True
 
 
-# def convert_MSPage(obj):
-#     if not is_MSPage(obj):
-#         raise ValueError("obj does not have the correct structure for an MSPage")
+def convert_MSPage(obj):
+    if not is_MSPage(obj):
+        raise ValueError("obj does not have the correct structure for an MSPage")
 
-#     return MSPage(
+    return MSPage(horizontalRulerData=obj["horizontalRulerData"],
+                  verticalRulerData=obj["verticalRulerData"],
 
-#     )
+                  layers=obj["layers"],
 
+                  frame=obj["frame"],
+                  style=obj["style"],
+                  name=obj["name"],
+                  rotation=obj["rotation"],
+
+                  isVisible=obj["isVisible"],
+                  isLocked=obj["isLocked"],
+
+                  isFlippedHorizontal=obj["isFlippedHorizontal"],
+                  isFlippedVertical=obj["isFlippedVertical"])
+
+
+##############################################################
+#                  MSLAYERGROUP FUNCTIONS                    #
+##############################################################
+def is_MSLayerGroup(obj):
+    if not isinstance(obj, dict):
+        return False
+    if "$class" not in obj.keys():
+        return False
+    if obj["$class"].get("$classname") not in ("MSLayerGroup", "MSShapeGroup"):
+        return False
+
+    return True
+
+
+def convert_MSLayerGroup(obj):
+    if not is_MSLayerGroup(obj):
+        raise ValueError("obj does not have the correct structure for an MSLayerGroup")
+
+    return MSLayerGroup(layers=obj["layers"],
+
+                        frame=obj["frame"],
+                        style=obj["style"],
+                        name=obj["name"],
+                        rotation=obj["rotation"],
+
+                        isVisible=obj["isVisible"],
+                        isLocked=obj["isLocked"],
+
+                        isFlippedHorizontal=obj["isFlippedHorizontal"],
+                        isFlippedVertical=obj["isFlippedVertical"])
+
+
+##############################################################
+#                  MSLAYER FUNCTIONS                         #
+##############################################################
+def is_MSLayer(obj):
+    if not isinstance(obj, dict):
+        return False
+    if "$class" not in obj.keys():
+        return False
+    if obj["$class"].get("$classname") not in ("MSLayer"):
+        return False
+
+    return True
+
+
+def convert_MSLayer(obj):
+    if not is_MSLayer(obj):
+        raise ValueError("obj does not have the correct structure for an MSLayer")
+
+    return MSLayer(frame=obj["frame"],
+                   style=obj["style"],
+                   name=obj["name"],
+                   rotation=obj["rotation"],
+
+                   isVisible=obj["isVisible"],
+                   isLocked=obj["isLocked"],
+
+                   isFlippedHorizontal=obj["isFlippedHorizontal"],
+                   isFlippedVertical=obj["isFlippedVertical"])
+
+
+##############################################################
+#                  MSSHAPEPATHLAYER FUNCTIONS                #
+##############################################################
+def is_MSShapePathLayer(obj):
+    if not isinstance(obj, dict):
+        return False
+    if "$class" not in obj.keys():
+        return False
+    if obj["$class"].get("$classname") not in ("MSRectangleShape", "MSShapePathLayer"):
+        return False
+
+    return True
+
+
+def convert_MSShapePathLayer(obj):
+    if not is_MSShapePathLayer(obj):
+        raise ValueError("obj does not have the correct structure for an MSShapePathLayer")
+
+    return MSShapePathLayer(path=obj["path"],
+                            fixedRadius=obj["fixedRadius"],
+                            booleanOperation=obj["booleanOperation"],
+
+                            frame=obj["frame"],
+                            style=obj.get("style"),
+                            name=obj["name"],
+                            rotation=obj["rotation"],
+
+                            isVisible=obj["isVisible"],
+                            isLocked=obj["isLocked"],
+
+                            isFlippedHorizontal=obj["isFlippedHorizontal"],
+                            isFlippedVertical=obj["isFlippedVertical"])
+
+
+##############################################################
+#                  MSSHAPEPATH FUNCTIONS                #
+##############################################################
+def is_MSShapePath(obj):
+    if not isinstance(obj, dict):
+        return False
+    if "$class" not in obj.keys():
+        return False
+    if obj["$class"].get("$classname") not in ("MSShapePath"):
+        return False
+
+    return True
+
+
+def convert_MSShapePath(obj):
+    if not is_MSShapePath(obj):
+        raise ValueError("obj does not have the correct structure for an MSShapePath")
+
+    return MSShapePath(points=obj["points"],
+                       isClosed=obj["isClosed"])
+
+
+##############################################################
+#                  MSCURVEPOINT FUNCTIONS                    #
+##############################################################
+def is_MSCurvePoint(obj):
+    if not isinstance(obj, dict):
+        return False
+    if "$class" not in obj.keys():
+        return False
+    if obj["$class"].get("$classname") not in ("MSCurvePoint"):
+        return False
+
+    return True
+
+
+def convert_MSCurvePoint(obj):
+    if not is_MSCurvePoint(obj):
+        raise ValueError("obj does not have the correct structure for an MSCurvePoint")
+
+    return MSCurvePoint(curveFrom=obj["curveFrom"],
+                        curveTo=obj["curveTo"],
+                        point=obj["point"],
+                        curveMode=obj["curveMode"],
+                        cornerRadius=obj["cornerRadius"])
+
+
+##############################################################
+#                  MSRECT FUNCTIONS                          #
+##############################################################
+def is_MSRect(obj):
+    if not isinstance(obj, dict):
+        return False
+    if "$class" not in obj.keys():
+        return False
+    if obj["$class"].get("$classname") not in ("MSRect"):
+        return False
+
+    return True
+
+
+def convert_MSRect(obj):
+    if not is_MSRect(obj):
+        raise ValueError("obj does not have the correct structure for an MSRect")
+
+    return MSRect(x=obj["x"],
+                  y=obj["y"],
+                  width=obj["width"],
+                  height=obj["height"])
+
+# ##############################################################
+# #                  MSRULERDATA FUNCTIONS                     #
+# ##############################################################
+# def is_MSRulerData(obj):
+#     if not isinstance(obj, dict):
+#         return False
+#     if "$class" not in obj.keys():
+#         return False
+#     if obj["$class"].get("$classname") not in ("MSRulerData"):
+#         return False
+
+#     return True
 
 ##############################################################
 #                  MSIMAGECOLLECTION FUNCTIONS               #
