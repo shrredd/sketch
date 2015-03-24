@@ -152,3 +152,8 @@ class MSRect(object):
         """
         # Not implemented
         pass
+
+    def __repr__(self):
+        return "<MSRect: x:{x} y:{y} width: {width} height: {height}>".format(
+            x=self.x, y=self.y, width=self.width, height=self.height
+        )
