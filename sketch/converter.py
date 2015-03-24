@@ -283,7 +283,7 @@ def is_MSShapePathLayer(obj):
         return False
     if "$class" not in obj.keys():
         return False
-    if obj["$class"].get("$classname") not in ("MSRectangleShape", "MSShapePathLayer"):
+    if obj["$class"].get("$classname") not in ("MSRectangleShape", "MSStarShape", "MSPolygonShape", "MSOvalShape", "MSShapePathLayer"):
         return False
 
     return True
@@ -294,7 +294,7 @@ def convert_MSShapePathLayer(obj):
         raise ValueError("obj does not have the correct structure for an MSShapePathLayer")
 
     return MSShapePathLayer(path=obj["path"],
-                            fixedRadius=obj["fixedRadius"],
+                            fixedRadius=obj.get("fixedRadius"),
                             booleanOperation=obj["booleanOperation"],
 
                             frame=obj["frame"],
@@ -486,6 +486,17 @@ def convert_NSMutableDictionary(obj):
 ##############################################################
 #                  NSARRAY FUNCTIONS                         #
 ##############################################################
+def has_individual_keys(raw_keys):
+    return reduce(lambda x, y: x or y,
+                  [key.startswith("NS.object.") for key in raw_keys])
+
+
+def extract_individual_keys(raw_keys):
+    individual_keys = [key for key in raw_keys if key.startswith("NS.object.")]
+    individual_keys.sort(key=lambda x: int(x.lstrip("NS.object.")))
+    return individual_keys
+
+
 def is_NSArray(obj):
     """
     An NSArray can either be a keyed as a list w/ "NS.objects" or have
@@ -498,9 +509,7 @@ def is_NSArray(obj):
     if obj["$class"].get("$classname") not in ("NSArray", "NSMutableArray"):
         return False
 
-    has_individual_keys = reduce(lambda x, y: x or y,
-                                 [key.startswith("NS.object.") for key in obj.keys()])
-    if "NS.objects" not in obj.keys() and not has_individual_keys:
+    if "NS.objects" not in obj.keys() and not has_individual_keys(obj.keys()):
         return False
 
     return True
@@ -510,10 +519,8 @@ def convert_NSArray(obj):
     if not is_NSArray(obj):
         raise ValueError("obj does not have the correct structure for a NSArray/NSMutableArray")
 
-    has_individual_keys = reduce(lambda x, y: x or y, [key.startswith("NS.object.") for key in obj.keys()])
-    individual_keys = [key for key in obj.keys() if key.startswith("NS.object")]
-
-    if has_individual_keys:
+    if has_individual_keys(obj.keys()):
+        individual_keys = extract_individual_keys(obj.keys())
         return [obj[key] for key in individual_keys]
 
     return obj["NS.objects"]
