@@ -1,6 +1,6 @@
-import gizeh as gz
 from itertools import chain
 
+from sketch.drawing.shapes import shape_element
 from sketch.models.MSLayer import MSLayer
 from sketch.models.MSShapePath import MSShapePath
 from sketch.utils import pairwise
@@ -53,7 +53,8 @@ class MSShapePathLayer(MSLayer):
         def _bezier_pts(start, end):
             bezier_pts = [(start.point.x, start.point.y), (start.curveFrom.x, start.curveFrom.y),
                           (end.curveTo.x, end.curveTo.y), (end.point.x, end.point.y)]
-            return [(x * self.frame.width, y * self.frame.height) for (x, y) in bezier_pts]
+            print "x: %s y: %s w: %s h: %s" % (self.frame.x, self.frame.y, self.frame.width, self.frame.height)
+            return [(self.frame.x + (x * self.frame.width), self.frame.y + (y * self.frame.height)) for (x, y) in bezier_pts]
 
         bezier_curves = []
         for _curr, _next in pairwise(self.path.points):
@@ -74,7 +75,7 @@ class MSShapePathLayer(MSLayer):
                 ctx.move_to(*curve_pts[0])
                 ctx.curve_to(*tuple(chain(*curve_pts))[2:])
 
-        return gz.shape_element(draw, stroke_width=1)
+        return shape_element(draw, stroke_width=1)
 
 
 ##############################################################
