@@ -1,5 +1,10 @@
+import gizeh as gz
+from itertools import chain
+
 from sketch.models.MSLayer import MSLayer
 from sketch.models.MSShapePath import MSShapePath
+from sketch.utils import pairwise
+
 
 
 class MSShapePathLayer(MSLayer):
@@ -42,13 +47,64 @@ class MSShapePathLayer(MSLayer):
                         fixedRadius=self.fixedRadius,
                         booleanOperation=self.booleanOperation,)
 
-    def render(self):
-        print "Frame width: %s frame height: %s" % (self.frame.width, self.frame.height)
-        import gizeh as gz
-        surface = gz.Surface(self.frame.width, self.frame.height)
-        self.path.render(surface)
-        surface.write_to_png("/Users/shravan/Desktop/output.png")
+    def render(self, surface):
+        """
+        renders the current `MSShapePathLayer` to `surface`
+        """
+        path = self.to_cairo()
+        path.draw(surface)
+
+    def _bezier_curves(self):
+        """
+        :returns a list of bezier_pts that define the entire shape path.
+        each bezier_pt is itself a list of four (x,y) tuples specifying
+        the points of an individual bezier curve of the path.
+        """
+        def _bezier_pts(start, end):
+            bezier_pts = [(start.point.x, start.point.y), (start.curveFrom.x, start.curveFrom.y),
+                          (end.curveTo.x, end.curveTo.y), (end.point.x, end.point.y)]
+            return [(x * self.frame.width, y * self.frame.height) for (x, y) in bezier_pts]
+
+        bezier_curves = []
+        for _curr, _next in pairwise(self.path.points):
+            bezier_curves.append(_bezier_pts(_curr, _next))
+
+        return bezier_curves
+
+    def to_cairo(self):
+        """
+        :returns a Cairo Element corresponding to this ShapePath
+        """
+        def draw(ctx):
+            bezier_curves = self._bezier_curves()
+            first_curve = True
+            for curve_pts in bezier_curves:
+                if first_curve:
+                    ctx.move_to(*curve_pts[0])
+                    first_curve = False
+                ctx.curve_to(*tuple(chain(*curve_pts))[2:])
+
+            if self.path.isClosed:
+                ctx.close_path()
+
+        return gz.shape_element(draw, stroke_width=1)
 
 
 class MSRectangleShape(MSShapePathLayer):
+    pass
+
+
+class MSStarShape(MSShapePathLayer):
+    pass
+
+
+class MSPolygonShape(MSShapePathLayer):
+    pass
+
+
+class MSOvalShape(MSShapePathLayer):
+    pass
+
+
+class MSTriangleShape(MSShapePathLayer):
     pass
