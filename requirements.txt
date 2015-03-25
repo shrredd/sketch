@@ -1,1 +1,2 @@
--e git://github.com/Zulko/gizeh.git#egg=gizeh
+cairocffi==0.6
+numpy==1.9.2
