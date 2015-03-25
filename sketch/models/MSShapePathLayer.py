@@ -6,7 +6,6 @@ from sketch.models.MSShapePath import MSShapePath
 from sketch.utils import pairwise
 
 
-
 class MSShapePathLayer(MSLayer):
     def __init__(self, path, fixedRadius, booleanOperation,
                  frame, style, name, rotation,
@@ -69,6 +68,9 @@ class MSShapePathLayer(MSLayer):
         for _curr, _next in pairwise(self.path.points):
             bezier_curves.append(_bezier_pts(_curr, _next))
 
+        if self.path.isClosed and len(self.path.points) >= 1:
+            bezier_curves.append(_bezier_pts(self.path.points[-1], self.path.points[0]))
+
         return bezier_curves
 
     def to_cairo(self):
@@ -77,18 +79,16 @@ class MSShapePathLayer(MSLayer):
         """
         def draw(ctx):
             bezier_curves = self._bezier_curves()
-            first_curve = True
             for curve_pts in bezier_curves:
-                if first_curve:
-                    ctx.move_to(*curve_pts[0])
-                    first_curve = False
+                ctx.move_to(*curve_pts[0])
                 ctx.curve_to(*tuple(chain(*curve_pts))[2:])
-
-            if self.path.isClosed:
-                ctx.close_path()
 
         return gz.shape_element(draw, stroke_width=1)
 
+
+##############################################################
+#   LEAVING HERE IN CASE WE NEED TO EXTEND MSSHAPEPATHLAYER  #
+##############################################################
 
 class MSRectangleShape(MSShapePathLayer):
     pass
