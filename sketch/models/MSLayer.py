@@ -1,4 +1,5 @@
-from sketch.models import (MSRect, MSStyle)
+from sketch.models.MSRect import MSRect
+from sketch.models.MSStyle import MSStyle
 
 
 class MSLayer(object):
@@ -15,7 +16,7 @@ class MSLayer(object):
         assert isinstance(name, basestring)
         self._name = name
 
-        assert isinstance(rotation, int)
+        assert isinstance(rotation, float)
         self._rotation = rotation
 
         assert isinstance(isVisible, bool)
