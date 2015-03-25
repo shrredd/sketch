@@ -283,7 +283,9 @@ def is_MSShapePathLayer(obj):
         return False
     if "$class" not in obj.keys():
         return False
-    if obj["$class"].get("$classname") not in ("MSRectangleShape", "MSStarShape", "MSPolygonShape", "MSOvalShape", "MSShapePathLayer"):
+    if obj["$class"].get("$classname") not in ("MSRectangleShape", "MSStarShape",
+                                               "MSPolygonShape", "MSOvalShape",
+                                               "MSTriangleShape", "MSShapePathLayer"):
         return False
 
     return True
