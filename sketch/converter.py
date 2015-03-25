@@ -296,7 +296,6 @@ def convert_MSShapePathLayer(obj):
         raise ValueError("obj does not have the correct structure for an MSShapePathLayer")
 
     return MSShapePathLayer(path=obj["path"],
-                            fixedRadius=obj.get("fixedRadius"),
                             booleanOperation=obj["booleanOperation"],
 
                             frame=obj["frame"],

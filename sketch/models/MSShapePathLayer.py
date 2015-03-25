@@ -7,16 +7,13 @@ from sketch.utils import pairwise
 
 
 class MSShapePathLayer(MSLayer):
-    def __init__(self, path, fixedRadius, booleanOperation,
+    def __init__(self, path, booleanOperation,
                  frame, style, name, rotation,
                  isVisible, isLocked,
                  isFlippedHorizontal, isFlippedVertical):
 
         assert isinstance(path, MSShapePath)
         self._path = path
-
-        assert isinstance(fixedRadius, float)
-        self._fixedRadius = fixedRadius
 
         assert isinstance(booleanOperation, int)
         self._booleanOperation = booleanOperation
@@ -30,20 +27,14 @@ class MSShapePathLayer(MSLayer):
         return self._path
 
     @property
-    def fixedRadius(self):
-        return self._fixedRadius
-
-    @property
     def booleanOperation(self):
         return self._booleanOperation
 
     def __repr__(self):
         return "<MSShapePathLayer \n\
                     path: {path}, \n\
-                    fixedRadius: {fixedRadius}, \n\
                     booleanOperation: {booleanOperation}".format(
                         path=self.path,
-                        fixedRadius=self.fixedRadius,
                         booleanOperation=self.booleanOperation,)
 
     def render(self, surface):
