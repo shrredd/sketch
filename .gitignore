@@ -40,3 +40,4 @@ Icon?
 Thumbs.db
 
 dump.rdb
+*.json
