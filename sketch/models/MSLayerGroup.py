@@ -14,6 +14,27 @@ class MSLayerGroup(MSLayer):
                                            isVisible, isLocked,
                                            isFlippedHorizontal, isFlippedVertical)
 
+    def to_cairo(self):
+        from sketch.drawing.elements import Group
+        element_list = []
+        for layer in self.layers:
+            element_list.append(layer.to_cairo())
+        return Group(element_list)
+
+    def render(self):
+        from sketch.drawing.surfaces import Surface
+
+        surface = Surface(int(self.frame.width), int(self.frame.height))
+        context = surface.get_new_context()
+
+        for layer in self.layers:
+            layer_surface = layer.render()
+            context.set_source_surface(layer_surface._cairo_surface,
+                                       layer.frame.x, layer.frame.y)
+            context.paint()
+
+        return surface
+
     @property
     def layers(self):
         """

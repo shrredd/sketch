@@ -98,7 +98,7 @@ class Group(Element):
 
     def __init__(self, elements):
         self.elements = elements
-        self.matrix = 1.0*np.eye(3)
+        self.matrix = 1.0 * np.eye(3)
 
     def draw(self, surface):
         """ Draws the group to a new context of the given Surface """

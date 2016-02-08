@@ -18,8 +18,8 @@ class MSPage(MSLayerGroup):
                  isVisible, isLocked,
                  isFlippedHorizontal, isFlippedVertical):
 
-        assert isinstance(horizontalRulerData, MSRulerData)
-        assert isinstance(verticalRulerData, MSRulerData)
+        # assert isinstance(horizontalRulerData, MSRulerData)
+        # assert isinstance(verticalRulerData, MSRulerData)
         self._horizontalRulerData = horizontalRulerData
         self._verticalRulerData = verticalRulerData
 
@@ -27,6 +27,23 @@ class MSPage(MSLayerGroup):
                                      frame, style, name, rotation,
                                      isVisible, isLocked,
                                      isFlippedHorizontal, isFlippedVertical)
+
+    def render(self):
+        from sketch.drawing.surfaces import Surface
+
+        # TODO(shravan): Handle negative coords
+        # TODO(shravan): Get content bounds for export
+        surface = Surface(2000, 2000)
+        context = surface.get_new_context()
+
+        for layer in self.layers:
+            layer_surface = layer.render()
+            context.set_source_surface(layer_surface._cairo_surface,
+                                       layer.frame.x, layer.frame.y)
+            context.paint()
+
+        print "Writing to png...%s" % self.frame
+        surface.write_to_png("/Users/shravan/Desktop/output.png")
 
     @property
     def contentBounds(self):

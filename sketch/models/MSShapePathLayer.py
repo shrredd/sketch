@@ -37,13 +37,6 @@ class MSShapePathLayer(MSLayer):
                         path=self.path,
                         booleanOperation=self.booleanOperation,)
 
-    def render(self, surface):
-        """
-        renders the current `MSShapePathLayer` to `surface`
-        """
-        path = self.to_cairo()
-        path.draw(surface)
-
     def _bezier_curves(self):
         """
         :returns a list of bezier_pts that define the entire shape path.
@@ -53,8 +46,7 @@ class MSShapePathLayer(MSLayer):
         def _bezier_pts(start, end):
             bezier_pts = [(start.point.x, start.point.y), (start.curveFrom.x, start.curveFrom.y),
                           (end.curveTo.x, end.curveTo.y), (end.point.x, end.point.y)]
-            print "x: %s y: %s w: %s h: %s" % (self.frame.x, self.frame.y, self.frame.width, self.frame.height)
-            return [(self.frame.x + (x * self.frame.width), self.frame.y + (y * self.frame.height)) for (x, y) in bezier_pts]
+            return [((x * self.frame.width), (y * self.frame.height)) for (x, y) in bezier_pts]
 
         bezier_curves = []
         for _curr, _next in pairwise(self.path.points):

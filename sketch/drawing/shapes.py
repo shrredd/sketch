@@ -31,9 +31,6 @@ def _set_source(ctx, src):
         ctx.set_source_rgb(*src)
 
 
-#########################################################################
-# BASE ELEMENTS
-
 def shape_element(draw_contour, xy=(0, 0), angle=0, fill=None,
                   stroke=(0, 0, 0), stroke_width=0,
                   line_cap=None, line_join=None):
@@ -81,22 +78,22 @@ def shape_element(draw_contour, xy=(0, 0), angle=0, fill=None,
     def new_draw(ctx):
         draw_contour(ctx)
         if fill is not None:
-                ctx.move_to(*xy)
-                _set_source(ctx, fill)
-                ctx.fill_preserve()
+            ctx.move_to(*xy)
+            _set_source(ctx, fill)
+            ctx.fill_preserve()
         if stroke_width > 0:
-                ctx.move_to(*xy)
-                ctx.set_line_width(stroke_width)
-                if line_cap is not None:
-                    ctx.set_line_cap({"butt":  cairo.LINE_CAP_BUTT,
-                                      "round": cairo.LINE_CAP_ROUND,
-                                      "square": cairo.LINE_CAP_SQUARE}[line_cap])
-                if line_join is not None:
-                    ctx.set_line_join({"cut":  cairo.LINE_JOIN_BEVEL,
-                                       "square": cairo.LINE_JOIN_MITER,
-                                       "round": cairo.LINE_JOIN_ROUND}[line_join])
-                _set_source(ctx, stroke)
-                ctx.stroke_preserve()
+            ctx.move_to(*xy)
+            ctx.set_line_width(stroke_width)
+            if line_cap is not None:
+                ctx.set_line_cap({"butt":  cairo.LINE_CAP_BUTT,
+                                  "round": cairo.LINE_CAP_ROUND,
+                                  "square": cairo.LINE_CAP_SQUARE}[line_cap])
+            if line_join is not None:
+                ctx.set_line_join({"cut":  cairo.LINE_JOIN_BEVEL,
+                                   "square": cairo.LINE_JOIN_MITER,
+                                   "round": cairo.LINE_JOIN_ROUND}[line_join])
+            _set_source(ctx, stroke)
+            ctx.stroke_preserve()
 
     return Element(new_draw).rotate(angle).translate(xy)
 

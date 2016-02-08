@@ -10,7 +10,7 @@ class MSLayer(object):
         assert isinstance(frame, MSRect)
         self._frame = frame
 
-        assert isinstance(style, MSStyle)
+        # assert isinstance(style, MSStyle)
         self._style = style
 
         assert isinstance(name, basestring)
@@ -31,6 +31,21 @@ class MSLayer(object):
         self._isFlippedVertical = isFlippedVertical
 
         super(MSLayer, self).__init__()
+
+    def to_cairo():
+        # Defined in subclasses
+        raise Exception("to_cairo undefined for MSLayer!")
+
+    def render(self):
+        """
+        renders the current `MSLayer` to a new `RecordingSurface`
+        :returns: The newly created surface
+        """
+        from sketch.drawing.surfaces import Surface
+        surface = Surface(int(self.frame.width), int(self.frame.height))
+        path = self.to_cairo()
+        path.draw(surface)
+        return surface
 
     @property
     def frame(self):

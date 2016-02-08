@@ -13,6 +13,7 @@ from sketch.models.MSPage import MSPage
 from sketch.models.MSRect import MSRect
 from sketch.models.MSShapePath import MSShapePath
 from sketch.models.MSShapePathLayer import MSShapePathLayer
+from sketch.models.MSTextLayer import MSTextLayer
 
 
 ##############################################################
@@ -43,6 +44,9 @@ def MSArchiver_object_converter(o):
 
     if is_MSShapePathLayer(o):
         return convert_MSShapePathLayer(o)
+
+    if is_MSTextLayer(o):
+        return convert_MSTextLayer(o)
 
     if is_MSShapePath(o):
         return convert_MSShapePath(o)
@@ -274,6 +278,74 @@ def convert_MSLayer(obj):
                    isFlippedHorizontal=obj["isFlippedHorizontal"],
                    isFlippedVertical=obj["isFlippedVertical"])
 
+
+##############################################################
+#                  MSTEXTLAYER FUNCTIONS                     #
+##############################################################
+def is_MSTextLayer(obj):
+    if not isinstance(obj, dict):
+        return False
+    if "$class" not in obj.keys():
+        return False
+    if obj["$class"].get("$classname") not in ("MSTextLayer"):
+        return False
+
+    return True
+
+
+def convert_MSTextLayer(obj):
+    if not is_MSTextLayer(obj):
+        raise ValueError("obj does not have the correct structure for an MSTextLayer")
+
+    return MSTextLayer(text=obj["storage"],
+                       usesNewLineSpacingBehaviour=obj["usesNewLineSpacingBehaviour"],
+                       textBehaviour=obj["textBehaviour"],
+                       heightIsClipped=obj["heightIsClipped"],
+                       automaticallyDrawOnUnderlyingPath=obj["automaticallyDrawOnUnderlyingPath"],
+
+                       frame=obj["frame"],
+                       style=obj.get("style"),
+                       name=obj["name"],
+                       rotation=obj["rotation"],
+
+                       isVisible=obj["isVisible"],
+                       isLocked=obj["isLocked"],
+
+                       isFlippedHorizontal=obj["isFlippedHorizontal"],
+                       isFlippedVertical=obj["isFlippedVertical"])
+
+
+def is_NSTextStorage(obj):
+    if not isinstance(obj, dict):
+        return False
+    if "$class" not in obj.keys():
+        return False
+    if obj["$class"].get("$classname") not in ("NSTextStorage"):
+        return False
+
+    return True
+
+
+def convert_NSTextStorage(obj):
+    if not is_MSTextLayer(obj):
+        raise ValueError("obj does not have the correct structure for an MSTextLayer")
+
+    return MSTextLayer(text=obj["storage"],
+                       usesNewLineSpacingBehaviour=obj["usesNewLineSpacingBehaviour"],
+                       textBehaviour=obj["textBehaviour"],
+                       heightIsClipped=obj["heightIsClipped"],
+                       automaticallyDrawOnUnderlyingPath=obj["automaticallyDrawOnUnderlyingPath"],
+
+                       frame=obj["frame"],
+                       style=obj.get("style"),
+                       name=obj["name"],
+                       rotation=obj["rotation"],
+
+                       isVisible=obj["isVisible"],
+                       isLocked=obj["isLocked"],
+
+                       isFlippedHorizontal=obj["isFlippedHorizontal"],
+                       isFlippedVertical=obj["isFlippedVertical"])
 
 ##############################################################
 #                  MSSHAPEPATHLAYER FUNCTIONS                #
@@ -569,7 +641,11 @@ def convert_NSString(obj):
     if not is_NSString(obj):
         raise ValueError("obj does not have the correct structure for a NSString/NSMutableString")
 
-    return obj["NS.string"]
+    # If it's a valid NSString
+    if obj.get("NS.string"):
+        return obj.get("NS.string")
+
+    return obj["NS.bytes"]
 
 
 ##############################################################

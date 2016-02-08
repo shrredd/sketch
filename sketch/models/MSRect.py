@@ -6,10 +6,10 @@ class MSRect(object):
     Represents a size and position of a layer on the screen. See MSLayer for more information
     """
     def __init__(self, x, y, width, height):
-        self._x = x
-        self._y = y
-        self._width = int(width)
-        self._height = int(height)
+        self._x = float(x)
+        self._y = float(y)
+        self._width = float(width)
+        self._height = float(height)
 
     """
     Base attributes. All floats
